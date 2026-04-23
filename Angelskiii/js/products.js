@@ -11,7 +11,7 @@ const PRODUCTS = [
       'images/longsleeve-white-2.jpg',
     ],
     sizes: ['XS', 'S', 'M', 'L', 'XL'],
-    description: 'Лонгслів 777Angelskiii — білий з чорним написом. Щільна 100% бавовна, оверсайз крій, рибчик на манжетах. Лімітована кількість.',
+    description: 'Лонгслів 777Angelskiii — білий з чорним написом. Щільна 100% бавовна, оверсайз крій.',
     details: [
       { label: 'Матеріал', value: '100% бавовна' },
       { label: 'Крій', value: 'Оверсайз' },
@@ -31,7 +31,7 @@ const PRODUCTS = [
       'images/longsleeve-black-2.jpg',
     ],
     sizes: ['XS', 'S', 'M', 'L', 'XL'],
-    description: 'Лонгслів 777Angelskiii — чорний з рожевим написом. Щільна 100% бавовна, оверсайз крій, рибчик на манжетах. Лімітована кількість.',
+    description: 'Лонгслів 777Angelskiii — чорний з рожевим написом. Щільна 100% бавовна, оверсайз крій.',
     details: [
       { label: 'Матеріал', value: '100% бавовна' },
       { label: 'Крій', value: 'Оверсайз' },
