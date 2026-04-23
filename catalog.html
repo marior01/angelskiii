@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Каталог — 777Angelskiii</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<canvas id="glitter-canvas"></canvas>
+
+<nav>
+  <a href="index.html" class="nav-logo">777Angelskiii</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Головна</a></li>
+    <li><a href="catalog.html">Каталог</a></li>
+    <li><a href="index.html#socials">Контакти</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="cart.html" class="cart-icon" title="Кошик">
+      🛒
+      <span class="cart-count" style="display:none">0</span>
+    </a>
+    <div class="burger"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+
+<section class="catalog-section" style="padding-top:130px;">
+  <div class="section-title">Каталог</div>
+  <div class="section-line"></div>
+
+  <div class="filter-bar">
+    <button class="filter-btn active" data-cat="all">Все</button>
+    <button class="filter-btn" data-cat="longsleeves">Лонгсліви</button>
+    <button class="filter-btn" data-cat="hoodies">Худі</button>
+    <button class="filter-btn" data-cat="tees">Футболки</button>
+    <button class="filter-btn" data-cat="pants">Штани</button>
+    <button class="filter-btn" data-cat="jackets">Куртки</button>
+    <button class="filter-btn" data-cat="accessories">Аксесуари</button>
+  </div>
+
+  <div class="products-grid" id="catalog-grid"></div>
+</section>
+
+<footer>
+  <p>© 2026 777Angelskiii. All rights reserved. &nbsp;|&nbsp; <a href="https://instagram.com/777angelskiii" target="_blank">@777angelskiii</a></p>
+</footer>
+
+<script src="js/products.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/main.js"></script>
+<script>
+  const grid = document.getElementById('catalog-grid');
+
+  function renderProducts(cat) {
+    const list = getProductsByCategory(cat);
+    grid.innerHTML = list.map(p => `
+      <a href="product.html?id=${p.id}" class="product-card">
+        <div class="product-card-img-wrap">
+          <img class="product-card-img" src="${p.images[0] || ''}" alt="${p.name}" onerror="this.style.background='#111120';this.style.minHeight='320px'">
+          ${p.badge ? `<span class="product-badge">${p.badge}</span>` : ''}
+        </div>
+        <div class="product-card-info">
+          <div class="product-card-name">${p.name}</div>
+          <div class="product-card-price">
+            ${p.price} ₴
+            ${p.oldPrice ? `<span class="old-price">${p.oldPrice} ₴</span>` : ''}
+          </div>
+        </div>
+      </a>`).join('');
+  }
+
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderProducts(btn.dataset.cat);
+    });
+  });
+
+  renderProducts('all');
+</script>
+</body>
+</html>

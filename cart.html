@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Кошик — 777Angelskiii</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<canvas id="glitter-canvas"></canvas>
+
+<nav>
+  <a href="index.html" class="nav-logo">777Angelskiii</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Головна</a></li>
+    <li><a href="catalog.html">Каталог</a></li>
+    <li><a href="index.html#socials">Контакти</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="cart.html" class="cart-icon" title="Кошик">
+      🛒
+      <span class="cart-count" style="display:none">0</span>
+    </a>
+    <div class="burger"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+
+<div class="cart-page">
+  <div class="section-title">Кошик</div>
+  <div class="section-line"></div>
+  <div id="cart-content"></div>
+</div>
+
+<!-- ORDER MODAL -->
+<div class="modal-overlay" id="order-modal">
+  <div class="modal">
+    <button class="modal-close" id="modal-close">✕</button>
+    <div class="modal-title">Оформити замовлення</div>
+    <div class="modal-sub">Ми зв'яжемось з вами через Instagram</div>
+    <form id="order-form">
+      <div class="form-group">
+        <label>Ваше ім'я</label>
+        <input type="text" name="name" placeholder="Ім'я" required />
+      </div>
+      <div class="form-group">
+        <label>Instagram нікнейм</label>
+        <input type="text" name="instagram" placeholder="@your_instagram" required />
+      </div>
+      <div class="form-group">
+        <label>Номер телефону</label>
+        <input type="tel" name="phone" placeholder="+380..." required />
+      </div>
+      <div class="form-group">
+        <label>Місто та відділення Нової Пошти</label>
+        <input type="text" name="address" placeholder="Київ, відділення №1" required />
+      </div>
+      <div class="form-group">
+        <label>Коментар (необов'язково)</label>
+        <textarea name="comment" placeholder="Побажання до замовлення..."></textarea>
+      </div>
+      <button type="submit" class="submit-order-btn">✦ Підтвердити замовлення</button>
+      <p class="ig-note">Після підтвердження ми напишемо вам в Instagram для уточнення деталей</p>
+    </form>
+  </div>
+</div>
+
+<footer>
+  <p>© 2026 777Angelskiii. All rights reserved. &nbsp;|&nbsp; <a href="https://instagram.com/777angelskiii" target="_blank">@777angelskiii</a></p>
+</footer>
+
+<script src="js/products.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/main.js"></script>
+<script>
+  function renderCart() {
+    const cart = getCart();
+    const container = document.getElementById('cart-content');
+
+    if (cart.length === 0) {
+      container.innerHTML = `
+        <div class="cart-empty">
+          <div style="font-size:3rem;margin-bottom:16px;">🛒</div>
+          <div>Кошик порожній</div>
+          <a href="catalog.html" style="display:inline-block;margin-top:24px;color:var(--accent);text-decoration:none;letter-spacing:2px;font-size:0.85rem;border:1px solid var(--accent);padding:12px 32px;">Перейти до каталогу</a>
+        </div>`;
+      return;
+    }
+
+    const itemsHTML = cart.map(item => `
+      <div class="cart-item">
+        <img class="cart-item-img" src="${item.image || ''}" alt="${item.name}" onerror="this.style.background='#111120'">
+        <div>
+          <div class="cart-item-name">${item.name}</div>
+          <div class="cart-item-size">Розмір: ${item.size} &nbsp;|&nbsp; Кількість: ${item.qty}</div>
+          <div class="cart-item-price">${item.price * item.qty} ₴</div>
+        </div>
+        <button class="cart-item-remove" data-id="${item.id}" data-size="${item.size}" title="Видалити">✕</button>
+      </div>`).join('');
+
+    const total = getCartTotal();
+    const delivery = 99;
+
+    container.innerHTML = `
+      <div class="cart-items">${itemsHTML}</div>
+      <div class="cart-summary">
+        <div class="cart-total-row"><span>Товари</span><span>${total} ₴</span></div>
+        <div class="cart-total-row"><span>Доставка (Нова Пошта)</span><span>${delivery} ₴</span></div>
+        <div class="cart-total-row final"><span>Разом</span><span>${total + delivery} ₴</span></div>
+        <button class="checkout-btn" id="checkout-btn">✦ Оформити замовлення</button>
+        <a href="catalog.html" style="display:block;text-align:center;margin-top:16px;color:var(--gray);font-size:0.8rem;letter-spacing:2px;text-decoration:none;">← Продовжити покупки</a>
+      </div>`;
+
+    // Remove items
+    document.querySelectorAll('.cart-item-remove').forEach(btn => {
+      btn.addEventListener('click', () => {
+        removeFromCart(btn.dataset.id, btn.dataset.size);
+        renderCart();
+      });
+    });
+
+    // Checkout
+    document.getElementById('checkout-btn').addEventListener('click', () => {
+      document.getElementById('order-modal').classList.add('active');
+    });
+  }
+
+  // Modal close
+  document.getElementById('modal-close').addEventListener('click', () => {
+    document.getElementById('order-modal').classList.remove('active');
+  });
+  document.getElementById('order-modal').addEventListener('click', e => {
+    if (e.target === document.getElementById('order-modal')) {
+      document.getElementById('order-modal').classList.remove('active');
+    }
+  });
+
+  // Order form submit → redirect to Instagram DM
+  document.getElementById('order-form').addEventListener('submit', e => {
+    e.preventDefault();
+    const data = new FormData(e.target);
+    const name = data.get('name');
+    const ig = data.get('instagram');
+    const phone = data.get('phone');
+    const address = data.get('address');
+    const comment = data.get('comment');
+    const cart = getCart();
+
+    const orderLines = cart.map(i => `${i.name} (${i.size}) x${i.qty} — ${i.price * i.qty}₴`).join('%0A');
+    const total = getCartTotal() + 99;
+
+    const msg = `Привіт! Хочу зробити замовлення 🛒%0A%0A` +
+      `Ім'я: ${name}%0A` +
+      `Instagram: ${ig}%0A` +
+      `Телефон: ${phone}%0A` +
+      `Адреса: ${address}%0A` +
+      `${comment ? 'Коментар: ' + comment + '%0A' : ''}` +
+      `%0AТовари:%0A${orderLines}%0A%0AРазом: ${total}₴`;
+
+    // Open Instagram DM with pre-filled message
+    window.open(`https://ig.me/m/777angelskiii`, '_blank');
+
+    showToast('Замовлення відправлено! Чекайте на повідомлення в Instagram ✦');
+    clearCart();
+    document.getElementById('order-modal').classList.remove('active');
+    setTimeout(() => renderCart(), 500);
+  });
+
+  renderCart();
+</script>
+</body>
+</html>
